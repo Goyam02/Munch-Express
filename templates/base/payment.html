@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - MunchExpress</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --color-green: #06c167;
+            --color-grey: #eeeeee;
+            --font-family: "UberMove", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+                sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: #f8f9fa;
+        }
+
+        .header {
+            width: 100%;
+            height: 70px;
+            padding: 10px 40px;
+            background-color: #1a1a1a;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .logo-container {
+            position: relative;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            margin-left: 10px; /* Add margin to move logo right */
+        }
+
+        .logo {
+            height: 100%;
+            width: 50px;
+            object-fit: contain;
+            z-index: 0; /* Logo should be behind text */
+        }
+
+        .brand-name {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 28px;
+            letter-spacing: -0.8px;
+            color: #f8f8f8;
+            margin-left: -9px; /* Keep negative margin */
+            position: relative;
+            z-index: 2; /* Text should be above logo */
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 90px auto 0; /* Added top margin to account for fixed header */
+            padding: 20px;
+        }
+
+        .payment-summary {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .payment-summary h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 5px 0;
+        }
+
+        .summary-item.total {
+            border-top: 2px solid #eee;
+            margin-top: 10px;
+            padding-top: 10px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .payment-methods {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .payment-methods h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .payment-button {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--color-green);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 20px;
+        }
+
+        .payment-button:hover {
+            background-color: #05a057;
+        }
+
+        .contact-info {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--color-green);
+            box-shadow: 0 0 0 2px rgba(6, 193, 103, 0.1);
+        }
+
+        .error {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        .footer {
+            width: 100%;
+            /* background-color: rgba(51, 51, 51, 0.95); */
+            backdrop-filter: blur(10px);
+            background-color: #1a1a1a; /* Match header color */
+            color: #b0b0b0;
+            padding: 60px 0 20px 0;
+            box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.1);
+        }
+        footer a {
+        color: #EEEEEE; /* Lighter link color in footer */
+        }
+        .footer-content {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            padding: 0 20px;
+        }
+
+        .footer-section h3 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 18px;
+            letter-spacing: 0.2px;
+            color: #f8f8f8; /* White headers in footer */
+            margin-bottom: 20px;
+        }
+
+        .footer-section p {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #b0b0b0; /* Light grey text */
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-section ul li a {
+            color: #b0b0b0;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            padding: 2px 0;
+            position: relative;
+        }
+
+        .footer-section ul li a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: 0;
+            left: 0;
+            background-color: #f8f8f8;
+            transition: width 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: #f8f8f8;
+            padding-left: 5px;
+        }
+
+        .footer-section ul li a:hover::after {
+            width: 100%;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-links a {
+            color: #b0b0b0;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .social-links a:hover {
+            color: #f8f8f8;
+            transform: translateY(-3px);
+        }
+
+        .social-links a:active {
+            transform: translateY(-1px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 40px;
+            margin-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 13px;
+            color: #888;
+        }
+
+        @media (max-width: 768px) {
+            .footer-content {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 30px;
+            }
+            .header {
+                height: 60px;
+                padding: 10px 20px;
+            }
+            
+            .logo-container {
+                margin-left: 8px; /* Slightly less margin on mobile */
+            }
+            
+            .logo {
+                width: 40px;
+            }
+            
+            .brand-name {
+                font-size: 24px;
+                margin-left: -8px; /* Slightly less overlap on mobile */
+            }
+        }
+
+        /* Brand name in footer */
+        .footer-section h3:first-child {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 20px;
+            letter-spacing: -0.3px;
+        }
+        a{
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        a:hover {
+        text-decoration: underline; /* Add underline on hover */
+        }
+        .primary-button {
+    background-color: #FFB74D;
+    color: #FFFFFF;
+}
+
+.primary-button:hover {
+    background-color: #FF9800; /* Darker on hover */
+}
+
+        /* Update the forms container style */
+        #loginForm,
+        #signupForm {
+            width: 100%;
+            transition: display 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo-container">
+                <img src="https://res.cloudinary.com/dsmrhr0lx/image/upload/v1742133484/1_cyopmr.jpg" alt="MunchExpress Logo" class="logo">
+            </div>
+            <div class="brand-name">unchExpress</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="payment-summary">
+            <h2>Order Summary</h2>
+            <div id="orderDetails"></div>
+            <div class="summary-item">
+                <span>Subtotal</span>
+                <span id="subtotal">₹0.00</span>
+            </div>
+            <div class="summary-item">
+                <span>GST (5%)</span>
+                <span id="gst">₹0.00</span>
+            </div>
+            <div class="summary-item total">
+                <span>Total Amount</span>
+                <span id="total">₹0.00</span>
+            </div>
+        </div>
+
+        <div class="payment-methods">
+            <h2>Contact Information</h2>
+            <div class="contact-info">
+                <div class="form-group">
+                    <label for="phone">Phone Number*</label>
+                    <input type="tel" id="phone" placeholder="Enter your phone number" required>
+                    <div class="error" id="phoneError">Please enter a valid phone number</div>
+                </div>
+                <div class="form-group">
+                    <label for="upi">UPI ID (Optional)</label>
+                    <input type="text" id="upi" placeholder="Enter your UPI ID">
+                </div>
+            </div>
+            <button id="rzp-button" class="payment-button">Pay Now</button>
+        </div>
+    </div>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const orderDetails = document.getElementById('orderDetails');
+            const subtotalElem = document.getElementById('subtotal');
+            const gstElem = document.getElementById('gst');
+            const totalElem = document.getElementById('total');
+            const phoneInput = document.getElementById('phone');
+            const phoneError = document.getElementById('phoneError');
+
+            if (cart.length === 0) {
+                window.location.href = 'cart.html';
+                return;
+            }
+
+            let subtotal = 0;
+            let orderHTML = '';
+
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                orderHTML += `
+                    <div class="summary-item">
+                        <span>${item.name} x ${item.quantity}</span>
+                        <span>₹${itemTotal.toFixed(2)}</span>
+                    </div>
+                `;
+            });
+
+            orderDetails.innerHTML = orderHTML;
+            const gst = subtotal * 0.05;
+            const total = subtotal + gst;
+
+            subtotalElem.textContent = `₹${subtotal.toFixed(2)}`;
+            gstElem.textContent = `₹${gst.toFixed(2)}`;
+            totalElem.textContent = `₹${total.toFixed(2)}`;
+
+            document.getElementById('rzp-button').onclick = function(e) {
+                const phone = phoneInput.value.trim();
+                if (!phone || phone.length < 10) {
+                    phoneError.style.display = 'block';
+                    phoneInput.focus();
+                    return;
+                }
+                phoneError.style.display = 'none';
+
+                const options = {
+                    key: 'ixfrceyvfngp57ktgttviw2bhavjdy', // Replace with your Razorpay test key
+                    amount: total * 100, // Amount in paise
+                    currency: 'INR',
+                    name: 'MunchExpress',
+                    description: 'Food Order Payment',
+                    handler: function (response) {
+                        alert('Payment successful! Payment ID: ' + response.razorpay_payment_id);
+                        localStorage.removeItem('cart');
+                        window.location.href = 'index.html';
+                    },
+                    prefill: {
+                        contact: phone
+                    },
+                    theme: {
+                        color: '#06c167'
+                    }
+                };
+                const rzp = new Razorpay(options);
+                rzp.open();
+                e.preventDefault();
+            };
+        });
+    </script>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>MunchExpress</h3>
+                <p>Delivering happiness, one meal at a time.</p>
+                <p>📍 123 Foodie Street<br>Cuisine City, CC 12345</p>
+                <p>📱 (555) 123-4567</p>
+            </div>
+            <div class="footer-section">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Partner With Us</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Support</h3>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Connect With Us</h3>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a href="#" aria-label="Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 MunchExpress. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/menu.css">
+    <script src="../static/js/script.js" defer></script>
+    <link rel="stylesheet" href="../static/css/header.css">
+    <style>
+        
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f8f8f8; }
+         .restro-name {
+            margin: 0;
+            margin-left: 30px;
+            font-size: 40px;
+            
+            font-style: oblique;
+            font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            font-weight: bold;
+            color: #1e0000;
+            /* text-shadow: 0 0 5px rgba(55, 74, 55, 0.9), 0 0 15px rgba(211, 244, 211, 0.7); */
+        }
+        
+        
+         /* .search-bar {  padding: 10px; border: 2px solid #ccc; border-radius: 20px; transition: border 0.3s; font-size: 16px;width: 800px; margin-top: 5px; margin-left: 500px;Adjust spacing} */
+         .searchBar {
+            margin-left: auto;
+            position: relative;
+            border: 2px solid black;
+            border-radius: 17px;
+            width: 600px;
+        }
+        
+        .search-input {
+            background: rgba(255, 255, 255, 0.1);
+            width: 100%;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 17px;
+            color: rgb(0, 0, 0);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-top: 0.5rem;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+        }
+        
+        .search-item {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .search-item:hover {
+            background-color: #f8f8f8;
+        }
+        
+        .search-item .item-details h4 {
+            margin: 0;
+            font-weight: 500;
+        }
+        
+        .search-item .item-meta {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .search-item .item-price {
+            color: #000;
+            font-weight: 500;
+        }
+        
+        .no-results {
+            padding: 1rem;
+            text-align: center;
+            color: #666;
+        }
+        
+        .loading-text {
+            padding: 1rem;
+            text-align: center;
+            color: #666;
+        }
+        
+        .banner { width: 95%; height: 500px; border-radius: 30px; margin-left: 40px; display: flex; overflow: hidden; justify-content: center; align-items: center; margin-top: 83px;}
+        /* .header { display: flex; align-items: center; padding: 10px; background-color: #fff; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); } */
+        .logo { width: 110px; height: 110px; border-radius: 70px;   }
+        /* .search-bar {  margin-right: 1500px;margin-top: 80px;padding: 10px; border: 1px solid #ccc; border-radius: 20px; transition: border 0.3s; font-size: 16px;width: 800px; } */
+        .menu-container { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; padding: 20px; }
+        .menu-item { background: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); overflow: hidden; width: 300px; }
+        .menu-item img { width: 100%; height: 300px; object-fit: cover; }
+        .menu-info { padding: 15px; }
+        /* .h2 { font-size: 24px; margin: 0; margin-bottom: 70px;} */
+        .menu-title { font-size: 18px; font-weight: bold; }
+        .menu-price { color: rgb(29, 46, 42); font-size: 18px; margin: 10px 0; }
+        .add-btn { background-color: #0d0c0c; color: white; padding: 10px; text-align: center; border-radius: 5px; cursor: pointer; }
+        .filter-buttons { margin: 20px; display: flex; }
+        .filter-buttons button {
+            margin-left: 10px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #000000;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .filter-buttons button:hover {
+            background-color: #000000;
+        }
+        .filter-buttons button.veg {
+            background-color: green;
+            color: white;
+        }
+        .filter-buttons button.non-veg {
+            background-color: red;
+            color: white;
+        }
+        .search-filter-container { display: flex; align-items: center; margin-right: 620px; }
+        
+        
+            #floating-cart-button {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background-color: #09d36b; /* Green */
+                border: none;
+                border-radius: 50%;
+                width: 60px;
+                height: 60px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                cursor: pointer;
+            }
+            
+            #cart-icon {
+                color: white;
+                width: 30px;
+                height: 30px;
+            }
+            
+            #cart-count {
+                position: absolute;
+                top: -5px;
+                right: -5px;
+                background: red;
+                color: white;
+                font-size: 14px;
+                font-weight: bold;
+                border-radius: 50%;
+                padding: 3px 7px;
+                display: none; /* Hide when 0 */
+            }
+            
+            </style>
+    <title>MughalsKitchen Menu</title>
+  
+</head>
+<body>
+    {% include 'base/menu_header.html' %}
+    
+   </nav>
+    <div class="banner-container">
+        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4" alt="Restaurant Banner" class="banner">
+    </div>
+    <div class="header">
+        <!-- <img src=""  class="logo">  -->
+        <div class="header-content">
+            <h2 class="restro-name">Mughals Kitchen</h2>
+            <div class="search-filter-container">
+                <div class="searchBar">
+                    <input type="text" class="search-input" placeholder="Search in Restaurant" oninput="handleSearchInput(event)">
+                    <div class="search-results"></div>
+                </div>
+                <div class="filter-buttons">
+                    <button onclick="filterMenu('all')">All</button>
+                    <button class="veg" onclick="filterMenu('veg')">Veg</button>
+                    <button class="non-veg" onclick="filterMenu('non-veg')">Non-Veg</button>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="menu-container">
+        <div class="menu-item veg">
+            <img src="https://kannanskitchen.com/wp-content/uploads/2021/04/DSC_1079_1.jpg" alt="Chole Bhature">
+            <div class="menu-info">
+                <div class="menu-title">Mughlai Biryani</div>
+                <p>Authentic taste of Hyderabad with a modern touch.</p>
+                <div class="menu-price">₹499</div>
+                <div class="info">
+                    <div class="add-btn" onclick="addToCart('Mughlai Biryani', 499)">Add +</div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="menu-item veg">
+            <img src="https://t4.ftcdn.net/jpg/04/18/22/71/360_F_418227121_mGoGy7ZE2jAkq07OnN599QU7PVuhVT57.jpg" alt="Cheesy Paneer Tikka">
+            <div class="menu-info">
+                <div class="menu-title">Mughlai Pulao</div>
+                <div class="menu-price">₹499</div>
+                <div class="info">
+                    <div class="add-btn" onclick="addToCart('Mughlai Pulao', 499)">Add +</div>
+                </div>
+            </div>
+        </div> -->
+        <div class="menu-item veg">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSym-jXobbiKbwJjduxcTn93Ab90lLmTNreTg&s" alt="Chole Bhature">
+            <div class="menu-info">
+                <div class="menu-title">Shami Kebab</div>
+                <p>Authentic taste of mughals with a modern touch.</p>
+                <div class="menu-price">₹499</div>
+                <div class="info">
+                    <div class="add-btn" onclick="addToCart('Shami Kebab', 499)">Add +</div>
+                </div>
+            </div>
+        </div>
+        <div class="menu-item veg">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnV3AhioHQnqye0hgkuYSCuerovwrpsZQOQw&s" alt="Cheesy Paneer Tikka">
+            <div class="menu-info">
+                <div class="menu-title">Dahi Kebab</div>
+                <p>India's most loved kebab with a aesthetic look.</p>
+                <div class="menu-price">₹669</div>
+                <div class="info">
+                    <div class="add-btn" onclick="addToCart('Dahi Kebab', 669)">Add +</div>
+                </div>
+            </div>
+        </div>
+        <div class="menu-item veg">
+            <img src="https://itsallgoodvegan.com/wp-content/uploads/2021/01/Primal-Kitchen-08.jpg" alt="Cheesy Mexican">
+            <div class="menu-info">
+                <div class="menu-title">Tofu Kebab</div>
+                <p>Old taste.Modern look with the same authentic taste</p>
+                <div class="menu-price">₹459</div>
+                <div class="info">
+                    <div class="add-btn" onclick="addToCart('Tofu Kebab', 459)">Add +</div>
+                </div>
+            </div>
+        </div>
+        <div class="menu-item veg">
+            <img src="https://bakefresh.net/wp-content/uploads/2024/03/IMG_8834-scaled-735x1102.jpg" alt="Cheesy American BBQ">
+            <div class="menu-info">
+                <div class="menu-title">Veg Seekh Kebab</div>
+                <p>Health+Taste</p>
+                <div class="menu-price">₹159</div>
+                <div class="info">
+                    <div class="add-btn" onclick="addToCart('Veg Seekh Kebab', 159)">Add +</div>
+                </div>
+            </div>
+        </div>
+        <div class="menu-item non-veg">
+            <img src="https://www.licious.in/blog/wp-content/uploads/2020/12/Chicken-Kebab.jpg" alt="Cheesy Chicken Tikka">
+            <div class="menu-info">
+                <div class="menu-title">Chicken Kebab</div>
+                <p>Made to perfection</p>
+                <div class="menu-price">₹289</div>
+                <div class="info">
+                    <div class="add-btn" onclick="addToCart('Chicken Kebab', 289)">Add +</div>
+                </div>
+            </div>
+        </div>
+        <div class="menu-item non-veg">
+            <img src="https://www.licious.in/blog/wp-content/uploads/2022/06/fish-kebabs-final.jpg" alt="Chicken Keema Melt">
+            <div class="menu-info">
+                <div class="menu-title">Fish Kebab</div>
+                <p>Special tikka cooked till perfection.</p>
+                <div class="menu-price">₹699</div>
+                <div class="info">
+                    <div class="add-btn" onclick="addToCart('Fish Kebab', 699)">Add +</div>
+                </div>
+            </div>
+        </div>
+        <div class="menu-item non-veg">
+            <img src="https://foodiesterminal.com/wp-content/uploads/2019/04/Mutton-seekh-kabab-recipe-22.jpg" alt="Cheesy Lamb Pepperoni">
+            <div class="menu-info">
+                <div class="menu-title">Mutton Kebab</div>
+                <p>Hot mutton kebab with elegent flavours</p>
+                <div class="menu-price">₹399</div>
+                <div class="info">
+                    <div class="add-btn" onclick="addToCart('Mutton Kebab', 399)">Add +</div>
+                </div>
+            </div>
+        </div>
+        <div class="menu-item non-veg">
+            <img src="https://www.oliviascuisine.com/wp-content/uploads/2019/07/grilled-cheese-skewers-IG-720x720.jpg" alt="Egg'n Chicken Melt">
+            <div class="menu-info">
+                <div class="menu-title">Cheesy Chicken Kebab</div>
+                <p>Chicken with South Indian flavours</p>
+                <div class="menu-price">₹699</div>
+                <div class="info">
+                    <div class="add-btn" onclick="addToCart('Cheesy Chicken Kebab', 699)">Add +</div>
+                </div>
+            </div>
+        </div>
+        <div class="menu-item veg">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPLldqET8-Ay2FacC6z3iM_PfKK1YA2QLx5g&s" alt="Cheesy American BBQ">
+            <div class="menu-info">
+                <div class="menu-title">Soya Kebab</div>
+                <p>Health+Taste</p>
+                <div class="menu-price">₹559</div>
+                <div class="info">
+                    <div class="add-btn" onclick="addToCart('Soya Kebab', 559)">Add +</div>
+                </div>
+            </div>
+        </div>
+        <div class="menu-item non-veg">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRt-4HbF-XvZ9Wis8dTgxNQ2677kqgX5HLaXA&s" alt="Cheesy Chicken Tikka">
+            <div class="menu-info">
+                <div class="menu-title">Chettinad Chicken Kebab</div>
+                <p>South Indian pepper chicken</p>
+                <div class="menu-price">₹579</div>
+                <div class="info">
+                    <div class="add-btn" onclick="addToCart('Chettinad Chicken Kebab', 579)">Add +</div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="menu-item veg">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ2WY2YmIJtXrpmDToEHwJIOAcyBefjpFwXg&s" alt="Cheesy American BBQ">
+            <div class="menu-info">
+                <div class="menu-title">Paneer Tikka Kebab</div>
+                <p>Authentic punjabi taste.</p>
+                <div class="menu-price">₹669</div>
+                <div class="info">
+                    <div class="add-btn" onclick="addToCart('Paneer Tikka Kebab', 669)">Add +</div>
+                </div>
+            </div>
+        </div> -->
+        <div class="menu-item veg">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl1Zd6PSAkbMUichi4VvGcCxTlHTo1kiedCQ&s" alt="Cheesy Chicken Tikka">
+            <div class="menu-info">
+                <div class="menu-title">Achari Kebab</div>
+                <p>South Indian special</p>
+                <div class="menu-price">₹499</div>
+                <div class="info">
+                    <div class="add-btn" onclick="addToCart('Achari Kebab', 499)">Add +</div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="menu-item veg">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAM_sU4h_Iz_foXrcRwo2H0NBHIgFdCv_KbA&s" alt="Chole Bhature">
+            <div class="menu-info">
+                <div class="menu-title">Chole Bhature</div>
+                <p>Authentic taste of Punjab with a modern touch.</p>
+                <div class="menu-price">₹499</div>
+                <div class="info">
+                    <div class="add-btn" onclick="addToCart('Chole Bhature', 499)">Add +</div>
+                </div>
+            </div>
+        </div> -->
+    </div>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <button id="floating-cart-button" style="position:fixed; bottom:20px; right:20px; background-color:transparent; border:none; border-radius:50%; padding:15px; box-shadow:0 4px 8px rgba(0,0,0,0.2);">
+        <i data-feather="shopping-cart" style="color: green;"></i>
+    </button>
+    <script src="script.js"></script>
+    <button id="floating-cart-button" onclick="redirectToCart()">
+        <i data-feather="shopping-cart" id="cart-icon"></i>
+        <span id="cart-count">0</span>
+    </button>
+    <script>
+        function handleSearchInput(event) {
+            const searchQuery = event.target.value.toLowerCase().trim();
+            const searchResults = document.querySelector('.search-results');
+            const menuItems = document.querySelectorAll('.menu-item');
+            
+            // Clear previous results
+            searchResults.innerHTML = '';
+            
+            if (searchQuery.length < 2) {
+                searchResults.style.display = 'none';
+                menuItems.forEach(item => item.style.display = 'block');
+                return;
+            }
+            
+            // Show loading state
+            searchResults.style.display = 'block';
+            searchResults.innerHTML = '<div class="loading-text">Searching...</div>';
+            
+            // Filter and display results
+            setTimeout(() => {
+                const filteredItems = Array.from(menuItems).filter(item => {
+                    const title = item.querySelector('.menu-title').textContent.toLowerCase();
+                    const description = item.querySelector('.menu-info').textContent.toLowerCase();
+                    return title.includes(searchQuery) || description.includes(searchQuery);
+                });
+                
+                if (filteredItems.length > 0) {
+                    searchResults.innerHTML = filteredItems.map(item => {
+                        const title = item.querySelector('.menu-title').textContent;
+                        const price = item.querySelector('.menu-price').textContent;
+                        const isVeg = item.classList.contains('veg');
+                        
+                        return `
+                            <div class="search-item" onclick="scrollToItem(this)">
+                                <div class="item-details">
+                                    <h4>${title}</h4>
+                                    <div class="item-meta">${isVeg ? 'Veg' : 'Non-Veg'}</div>
+                                </div>
+                                <div class="item-price">${price}</div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    searchResults.innerHTML = '<div class="no-results">No items found matching your search</div>';
+                }
+            }, 500);
+        }
+
+        function scrollToItem(element) {
+            const searchQuery = document.querySelector('.search-input').value.toLowerCase();
+            const menuItems = document.querySelectorAll('.menu-item');
+            
+            // Find the matching item
+            const matchingItem = Array.from(menuItems).find(item => {
+                const title = item.querySelector('.menu-title').textContent.toLowerCase();
+                return title === element.querySelector('h4').textContent.toLowerCase();
+            });
+            
+            if (matchingItem) {
+                // Scroll to the item
+                matchingItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Add highlight effect
+                matchingItem.style.backgroundColor = '#f8f8f8';
+                setTimeout(() => {
+                    matchingItem.style.backgroundColor = '';
+                }, 2000);
+            }
+            
+            // Clear search and hide results
+            document.querySelector('.search-input').value = '';
+            document.querySelector('.search-results').style.display = 'none';
+        }
+
+        // Close search results when clicking outside
+        document.addEventListener('click', (e) => {
+            const searchBar = document.querySelector('.searchBar');
+            const searchResults = document.querySelector('.search-results');
+            
+            if (!searchBar.contains(e.target)) {
+                searchResults.style.display = 'none';
+            }
+        });
+
+        // Add styles for search results
+        const style = document.createElement('style');
+        style.textContent = `
+            .search-results {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                border-radius: 4px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                margin-top: 0.5rem;
+                max-height: 400px;
+                overflow-y: auto;
+                display: none;
+                z-index: 1000;
+            }
+            
+            .search-item {
+                padding: 1rem;
+                border-bottom: 1px solid #eee;
+                cursor: pointer;
+                transition: background-color 0.2s;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            
+            .search-item:hover {
+                background-color: #f8f8f8;
+            }
+            
+            .search-item .item-details h4 {
+                margin: 0;
+                font-weight: 500;
+            }
+            
+            .search-item .item-meta {
+                font-size: 0.8rem;
+                color: #666;
+            }
+            
+            .search-item .item-price {
+                color: #000;
+                font-weight: 500;
+            }
+            
+            .no-results {
+                padding: 1rem;
+                text-align: center;
+                color: #666;
+            }
+            
+            .loading-text {
+                padding: 1rem;
+                text-align: center;
+                color: #666;
+            }
+        `;
+        document.head.appendChild(style);
+        
+        function filterMenu(category) {
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                if (category === 'all') {
+                    item.style.display = 'block';
+                } else if (category === 'veg') {
+                    item.style.display = item.classList.contains('veg') ? 'block' : 'none';
+                } else if (category === 'non-veg') {
+                    item.style.display = item.classList.contains('non-veg') ? 'block' : 'none';
+                }
+            });
+        }
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            const searchBar = document.querySelector('.search-bar');
+            if (searchBar) {
+                searchBar.addEventListener('input', function() {
+                    const query = this.value.toLowerCase();
+                    const menuItems = document.querySelectorAll('.menu-item');
+                    menuItems.forEach(item => {
+                        const title = item.querySelector('.menu-title').textContent.toLowerCase();
+                        item.style.display = title.includes(query) ? 'block' : 'none';
+                    });
+                });
+            }
+        });
+        
+        document.addEventListener("DOMContentLoaded", function () {
+            
+            feather.replace(); // Ensure icons load properly
+           
+        
+        
+           
+        
+        });
+        document.addEventListener("DOMContentLoaded", () => {
+            feather.replace(); // Refresh feather icons to apply styles
+            updateCartCount(); // Ensure cart count updates on page load
+        });
+        
+        function redirectToCart() {
+            window.location.href = "/cart"; // Redirect to cart page
+        }
+        
+        // Function to add an item to the cart
+        let cart = JSON.parse(localStorage.getItem("cart")) || []; // Load existing cart
+        
+        function addToCart(itemName, itemPrice) {
+            let existingItem = cart.find(item => item.name === itemName);
+    
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ name: itemName, price: itemPrice, quantity: 1 });
+            }
+    
+            localStorage.setItem("cart", JSON.stringify(cart)); // Save cart to localStorage
+            updateCartCount(); // Update the cart count on UI
+        }
+        function updateCartCount() {
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            let cartCount = document.getElementById("cart-count");
+    
+            if (cart.length > 0) {
+                cartCount.style.display = "flex"; // Show badge when items are added
+                cartCount.innerText = cart.length;
+            } else {
+                cartCount.style.display = "none"; // Hide when empty
+            }
+        }
+        
+        // Run on page load
+        document.addEventListener("DOMContentLoaded", () => {
+            feather.replace(); // Refresh feather icons
+            updateCartCount(); // Update count on load
+        });
+    </script>
+</body>
+</html>

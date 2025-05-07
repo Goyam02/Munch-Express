@@ -1,0 +1,228 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - MunchExpress</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --color-green: #06c167;
+            --color-grey: #eeeeee;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            margin-top: 90px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            background-color: #f8f9fa;
+        }
+        .cart-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .cart-item {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .item-details {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .quantity-btn {
+            background: var(--color-grey);
+            border: none;
+            padding: 0.25rem 0.5rem;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .remove-btn {
+            color: #dc3545;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+        .cart-summary {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem 0;
+        }
+        .summary-row.total {
+            border-top: 2px solid #eee;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            font-weight: bold;
+        }
+        .checkout-btn {
+            background: var(--color-green);
+            color: white;
+            border: none;
+            padding: 1rem;
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 1rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        .checkout-btn:hover {
+            background: #05a057;
+        }
+        .empty-cart {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+        .success-message {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--color-green);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+    {% include 'base/header.html' %}
+
+    <div class="cart-container">
+        <div id="cartItems"></div>
+        <div class="cart-summary">
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span id="subtotal">₹0.00</span>
+            </div>
+            <div class="summary-row">
+                <span>GST (5%)</span>
+                <span id="gst">₹0.00</span>
+            </div>
+            <div class="summary-row total">
+                <span>Total</span>
+                <span id="total">₹0.00</span>
+            </div>
+            <button id="checkoutBtn" class="checkout-btn">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load and display cart items
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const cartItemsContainer = document.getElementById('cartItems');
+            const subtotalElem = document.getElementById('subtotal');
+            const gstElem = document.getElementById('gst');
+            const totalElem = document.getElementById('total');
+
+            function updateCart() {
+                let subtotal = 0;
+                
+                if (cart.length === 0) {
+                    cartItemsContainer.innerHTML = '<div class="empty-cart">Your cart is empty</div>';
+                    subtotalElem.textContent = '₹0.00';
+                    gstElem.textContent = '₹0.00';
+                    totalElem.textContent = '₹0.00';
+                    return;
+                }
+
+                cartItemsContainer.innerHTML = cart.map((item, index) => {
+                    const itemTotal = item.price * item.quantity;
+                    subtotal += itemTotal;
+                    return `
+                        <div class="cart-item">
+                            <div class="item-details">
+                                
+                                <div>
+                                    <h3>${item.name}</h3>
+                                    <div class="quantity-controls">
+                                        <button class="quantity-btn" onclick="updateQuantity(${index}, -1)">-</button>
+                                        <span>${item.quantity}</span>
+                                        <button class="quantity-btn" onclick="updateQuantity(${index}, 1)">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <span>₹${itemTotal.toFixed(2)}</span>
+                                <button class="remove-btn" onclick="removeItem(${index})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                const gst = subtotal * 0.05;
+                const total = subtotal + gst;
+
+                subtotalElem.textContent = `₹${subtotal.toFixed(2)}`;
+                gstElem.textContent = `₹${gst.toFixed(2)}`;
+                totalElem.textContent = `₹${total.toFixed(2)}`;
+            }
+
+            window.updateQuantity = (index, change) => {
+                if (cart[index].quantity + change > 0) {
+                    cart[index].quantity += change;
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    updateCart();
+                }
+            };
+
+            window.removeItem = (index) => {
+                cart.splice(index, 1);
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCart();
+            };
+
+            document.getElementById('checkoutBtn').addEventListener('click', () => {
+                if (cart.length === 0) {
+                    alert('Your cart is empty!');
+                    return;
+                }
+                window.location.href = '/payment';
+            });
+
+            updateCart();
+        });
+    </script>
+</body>
+</html>

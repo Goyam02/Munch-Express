@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MunchMart</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f7;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .help-btn {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+        }
+        
+        .progress-bar {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            background-color: white;
+        }
+        
+        .step {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ddd;
+            color: #666;
+            font-weight: bold;
+            margin: 0 40px;
+        }
+        
+        .step-number.active {
+            background-color: #00b159;
+            color: white;
+        }
+        
+        .step-line {
+            width: 50px;
+            height: 2px;
+            background-color: #ddd;
+        }
+        
+        .step-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            bottom: -25px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .step.active .step-text {
+            color: #00b159;
+            font-weight: bold;
+        }
+        
+        .container {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        .cart-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            width: 65%;
+        }
+        
+        .order-summary {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            width: 30%;
+        }
+        
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        
+        .cart-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .clear-btn {
+            color: #ff6b6b;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .cart-item {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            padding: 20px 0;
+        }
+        
+        .item-image {
+            width: 80px;
+            height: 80px;
+            background-color: #f5f5f7;
+            margin-right: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .item-details {
+            flex-grow: 1;
+        }
+        
+        .item-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .item-unit {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .item-price {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .item-controls {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        
+        .quantity-control {
+            display: flex;
+            align-items: center;
+        }
+        
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 1px solid #ddd;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .quantity {
+            margin: 0 10px;
+            width: 30px;
+            text-align: center;
+        }
+        
+        .remove-btn {
+            color: #ff6b6b;
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-left: 30px;
+        }
+        
+        .delivery-options {
+            margin-top: 30px;
+        }
+        
+        .delivery-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .options-container {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .option {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            width: 50%;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .option.selected {
+            border-color: #00b159;
+        }
+        
+        .option-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .option-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            color: #00b159;
+        }
+        
+        .option-title {
+            font-weight: bold;
+        }
+        
+        .option-description {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .option-price {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-weight: bold;
+        }
+        
+        .summary-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .summary-label {
+            color: #666;
+        }
+        
+        .summary-value {
+            font-weight: bold;
+        }
+        
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 25px 0;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .total-label {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .total-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #00b159;
+        }
+        
+        .checkout-btn {
+            background-color: #00b159;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 15px;
+            width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        
+        .payment-methods {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .promo-section {
+            margin-top: 30px;
+        }
+        
+        .promo-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .promo-container {
+            display: flex;
+        }
+        
+        .promo-input {
+            flex-grow: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px 0 0 5px;
+        }
+        
+        .apply-btn {
+            background-color: #00b159;
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            padding: 0 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .floating-cart {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: #00b159;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+        
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 25px;
+            height: 25px;
+            background-color: #ff6b6b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        /* Details Page Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd; 
+            border-radius: 5px;
+        }
+
+        .form-input.error {
+            border-color: #ff6b6b;
+        }
+        
+        /* Complete Page Styles */
+        .success-container {
+            text-align: center;
+            padding: 50px 0;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background-color: #00b159;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            color: white;
+            font-size: 40px;
+        }
+
+        .success-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .success-message {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        /* Hidden class */
+        .hidden {
+            display: none;
+        }
+        
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #ff6b6b;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .toast.show {
+            opacity: 1;
+        }
+        
+        /* Required field marker */
+        .required::after {
+            content: " *";
+            color: #ff6b6b;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="{% url 'munchmart:index_grocery' %}" style="text-decoration: none; color: inherit;">
+            <div class="logo">
+                <span>MunchMart</span>
+            </div>
+        </a>
+        <a href="#" class="help-btn">Help</a>
+    </header>
+    
+    <div class="progress-bar">
+        <div class="step active" id="cart-step">
+            <div class="step-number active">1</div>
+            <div class="step-text">Cart</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" id="details-step">
+            <div class="step-number">2</div>
+            <div class="step-text">Details</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" id="payment-step">
+            <div class="step-number">3</div>
+            <div class="step-text">Payment</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" id="complete-step">
+            <div class="step-number">4</div>
+            <div class="step-text">Complete</div>
+        </div>
+    </div>
+    
+    <!-- Toast notification -->
+    <div class="toast" id="toast"></div>
+    
+    <div class="container">
+        <!-- Cart Section -->
+        <div class="cart-container" id="cart-section">
+            <div class="cart-header">
+                <div class="cart-title">Your Cart (<span id="item-count">0</span> items)</div>
+                <button class="clear-btn">Clear Cart</button>
+            </div>
+            
+            <div class="cart-items" id="cart-items-container">
+                <!-- Cart items will be added dynamically here -->
+                <div id="empty-cart-message" style="text-align: center; padding: 50px 0; color: #666;">
+                    Your cart is empty. Add some items to get started!
+                </div>
+            </div>
+            
+            <div class="delivery-options">
+                <div class="delivery-title">Delivery Options</div>
+                <div class="options-container">
+                    <div class="option selected" data-option="home" data-price="40">
+                        <div class="option-header">
+                            <div class="option-icon">🏠</div>
+                            <div class="option-title">Home Delivery</div>
+                        </div>
+                        <div class="option-description">Get it delivered to your doorstep</div>
+                        <div class="option-price">₹40</div>
+                    </div>
+                    
+                    <div class="option" data-option="store" data-price="0">
+                        <div class="option-header">
+                            <div class="option-icon">🏪</div>
+                            <div class="option-title">Store Pickup</div>
+                        </div>
+                        <div class="option-description">Pick up from nearest store</div>
+                        <div class="option-price">FREE</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Details Section -->
+        <div class="cart-container hidden" id="details-section">
+            <div class="cart-header">
+                <div class="cart-title">Delivery Details</div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label required">Full Name</label>
+                <input type="text" class="form-input" id="fullname" placeholder="Enter your full name">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label required">Phone Number</label>
+                <input type="text" class="form-input" id="phone" placeholder="Enter your phone number">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label required">UPI ID</label>
+                <input type="text" class="form-input" id="upi" placeholder="Enter your UPI ID">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label required">Address</label>
+                <input type="text" class="form-input" id="address" placeholder="Enter your address">
+            </div>
+        </div>
+        
+        <!-- Payment Section -->
+        <div class="cart-container hidden" id="payment-section">
+            <div class="cart-header">
+                <div class="cart-title">Payment</div>
+            </div>
+            
+            <div style="text-align: center; padding: 50px 0;">
+                <p>Payment section will be implemented in the future.</p>
+            </div>
+        </div>
+        
+        <!-- Complete Section -->
+        <div class="cart-container hidden" id="complete-section">
+            <div class="success-container">
+                <div class="success-icon">✓</div>
+                <div class="success-title">Order Completed!</div>
+                <div class="success-message">Your order has been placed successfully and will be delivered to you shortly.</div>
+                <button class="checkout-btn" id="continue-shopping">Continue Shopping</button>
+            </div>
+        </div>
+        
+        <div class="order-summary">
+            <div class="summary-title">Order Summary</div>
+            
+            <div class="summary-row">
+                <div class="summary-label">Subtotal</div>
+                <div class="summary-value" id="subtotal">₹0.00</div>
+            </div>
+            
+            <div class="summary-row">
+                <div class="summary-label">Delivery Fee</div>
+                <div class="summary-value" id="delivery-fee">₹40.00</div>
+            </div>
+            
+            <div class="summary-row">
+                <div class="summary-label">Taxes & Charges</div>
+                <div class="summary-value" id="taxes">₹0.00</div>
+            </div>
+            
+            <div class="total-row">
+                <div class="total-label">Total</div>
+                <div class="total-value" id="total">₹40.00</div>
+            </div>
+            
+            <button class="checkout-btn" id="proceed-btn">Proceed to Checkout</button>
+            
+            <div class="payment-methods">Payment Methods</div>
+            
+            <div class="promo-section">
+                <div class="promo-title">Apply Promo Code</div>
+                <div class="promo-container">
+                    <input type="text" class="promo-input" placeholder="Enter promo code">
+                    <button class="apply-btn">Apply</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="floating-cart">
+        <span>🛒</span>
+        <span class="cart-badge">0</span>
+    </div>
+    
+    <script>
+        // Variables
+        let currentStep = 1;
+        let sections = ['cart-section', 'details-section', 'payment-section', 'complete-section'];
+        let stepElements = ['cart-step', 'details-step', 'payment-step', 'complete-step'];
+        let deliveryFee = 40;
+        let taxRate = 0.05;
+        
+        // Cart items array
+        let cartItems = [];
+        
+        // DOM Elements
+        const proceedBtn = document.getElementById('proceed-btn');
+        const itemCountEl = document.getElementById('item-count');
+        const clearCartBtn = document.querySelector('.clear-btn');
+        const deliveryOptions = document.querySelectorAll('.option');
+        const subtotalEl = document.getElementById('subtotal');
+        const deliveryFeeEl = document.getElementById('delivery-fee');
+        const taxesEl = document.getElementById('taxes');
+        const totalEl = document.getElementById('total');
+        const continueShopping = document.getElementById('continue-shopping');
+        const toast = document.getElementById('toast');
+        const cartItemsContainer = document.getElementById('cart-items-container');
+        const emptyCartMessage = document.getElementById('empty-cart-message');
+        
+        // Required fields
+        const requiredFields = ['fullname', 'phone', 'upi', 'address'];
+        
+        // Functions
+        function showSection(sectionIndex) {
+            // Hide all sections
+            sections.forEach(section => {
+                document.getElementById(section).classList.add('hidden');
+            });
+            
+            // Show the selected section
+            document.getElementById(sections[sectionIndex - 1]).classList.remove('hidden');
+            
+            // Update the progress bar
+            updateSteps(sectionIndex);
+            
+            // Update the button text based on the step
+            updateButtonText(sectionIndex);
+            
+            // Update the current step
+            currentStep = sectionIndex;
+        }
+        
+        function updateSteps(activeStep) {
+            // Reset all steps
+            stepElements.forEach((step, index) => {
+                const stepEl = document.getElementById(step);
+                const stepNumber = stepEl.querySelector('.step-number');
+                
+                if (index + 1 <= activeStep) {
+                    stepEl.classList.add('active');
+                    stepNumber.classList.add('active');
+                } else {
+                    stepEl.classList.remove('active');
+                    stepNumber.classList.remove('active');
+                }
+            });
+        }
+        
+        function updateButtonText(step) {
+            switch(step) {
+                case 1:
+                    proceedBtn.textContent = 'Proceed to Checkout';
+                    break;
+                case 2:
+                    proceedBtn.textContent = 'Continue to Payment';
+                    break;
+                case 3:
+                    proceedBtn.textContent = 'Place Order';
+                    break;
+                case 4:
+                    proceedBtn.textContent = 'Continue Shopping';
+                    break;
+            }
+        }
+        
+        function calculateSubtotal() {
+            let subtotal = 0;
+            cartItems.forEach(item => {
+                subtotal += item.price * item.quantity;
+            });
+            return subtotal;
+        }
+        
+        function updateSummary() {
+            const subtotal = calculateSubtotal();
+            const taxes = subtotal * taxRate;
+            const total = subtotal + deliveryFee + taxes;
+            
+            subtotalEl.textContent = `₹${subtotal.toFixed(2)}`;
+            taxesEl.textContent = `₹${taxes.toFixed(2)}`;
+            totalEl.textContent = `₹${total.toFixed(2)}`;
+        }
+        
+        function updateItemCount() {
+            const itemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+            itemCountEl.textContent = itemCount;
+            document.querySelector('.cart-badge').textContent = itemCount;
+            
+            // Show/hide empty cart message
+            if (cartItems.length === 0) {
+                emptyCartMessage.style.display = 'block';
+            } else {
+                emptyCartMessage.style.display = 'none';
+            }
+        }
+        
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        function validateCart() {
+            if (cartItems.length === 0) {
+                showToast('Your cart is empty. Add items to proceed.');
+                return false;
+            }
+            return true;
+        }
+        
+        function validateDetails() {
+            let isValid = true;
+            
+            // Reset all fields
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                field.classList.remove('error');
+            });
+            
+            // Check each required field
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!field.value.trim()) {
+                    field.classList.add('error');
+                    isValid = false;
+                }
+            });
+            
+            if (!isValid) {
+                showToast('Please fill in all required fields.');
+            }
+            
+            return isValid;
+        }
+        
+        // Function to add item to cart
+        function addToCart(item) {
+            // Check if item already exists in cart
+            const existingItemIndex = cartItems.findIndex(cartItem => 
+                cartItem.id === item.id || cartItem.name === item.name
+            );
+            
+            if (existingItemIndex >= 0) {
+                // Update quantity if item exists
+                cartItems[existingItemIndex].quantity += item.quantity || 1;
+            } else {
+                // Add new item to cart
+                cartItems.push(item);
+            }
+            
+            // Update the cart display
+            renderCartItems();
+            updateItemCount();
+            updateSummary();
+            
+            // Save cart to localStorage
+            saveCartToLocalStorage();
+            
+            // Show success message
+            showToast(`${item.name} added to cart!`);
+        }
+        
+        // Function to remove item from cart
+        function removeFromCart(itemId) {
+            const itemIndex = cartItems.findIndex(item => item.id === itemId);
+            
+            if (itemIndex >= 0) {
+                cartItems.splice(itemIndex, 1);
+                renderCartItems();
+                updateItemCount();
+                updateSummary();
+                saveCartToLocalStorage();
+                showToast('Item removed from cart.');
+            }
+        }
+        
+        // Function to update item quantity
+        function updateCartItemQuantity(itemId, newQuantity) {
+            const item = cartItems.find(item => item.id === itemId);
+            
+            if (item) {
+                if (newQuantity <= 0) {
+                    removeFromCart(itemId);
+                } else {
+                    item.quantity = newQuantity;
+                    renderCartItems();
+                    updateItemCount();
+                    updateSummary();
+                    saveCartToLocalStorage();
+                }
+            }
+        }
+        
+        // Function to render cart items
+        function renderCartItems() {
+            // Clear the cart container
+            cartItemsContainer.innerHTML = '';
+            
+            if (cartItems.length === 0) {
+                cartItemsContainer.appendChild(emptyCartMessage);
+                emptyCartMessage.style.display = 'block';
+                return;
+            }
+            
+            emptyCartMessage.style.display = 'none';
+            
+            // Add each item to the cart
+            cartItems.forEach(item => {
+                const cartItemElement = document.createElement('div');
+                cartItemElement.className = 'cart-item';
+                cartItemElement.dataset.id = item.id;
+                
+                let imageContent;
+                if (item.imageUrl) {
+                    imageContent = `<img src="${item.imageUrl}" alt="${item.name}">`;
+                } else if (item.emoji) {
+                    imageContent = `<span>${item.emoji}</span>`;
+                } else {
+                    imageContent = `<span>📦</span>`;
+                }
+                
+                cartItemElement.innerHTML = `
+                    <div class="item-image">
+                        ${imageContent}
+                    </div>
+                    <div class="item-details">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-unit">${item.unit || '1 unit'}</div>
+                        <div class="item-price">₹${(item.price * item.quantity).toFixed(2)}</div>
+                        <div class="item-controls">
+                            <div class="quantity-control">
+                                <div class="quantity-btn decrement">-</div>
+                                <div class="quantity">${item.quantity}</div>
+                                <div class="quantity-btn increment">+</div>
+                            </div>
+                            <button class="remove-btn">Remove</button>
+                        </div>
+                    </div>
+                `;
+                
+                cartItemsContainer.appendChild(cartItemElement);
+            });
+            
+            // Set up event listeners for the new items
+            setupQuantityButtons();
+            setupRemoveButtons();
+        }
+        
+        // Function to save cart to localStorage
+        function saveCartToLocalStorage() {
+            localStorage.setItem('cart', JSON.stringify(cartItems));
+        }
+        
+        // Function to load cart from localStorage
+        function loadCartFromLocalStorage() {
+            const savedCart = localStorage.getItem('cart');
+            if (savedCart) {
+                try {
+                    cartItems = JSON.parse(savedCart);
+                    // Ensure each item has an id
+                    cartItems.forEach((item, index) => {
+                        if (!item.id) {
+                            item.id = index + 1;
+                        }
+                    });
+                    renderCartItems();
+                    updateItemCount();
+                    updateSummary();
+                } catch (e) {
+                    console.error('Error loading cart from localStorage:', e);
+                    cartItems = [];
+                }
+            }
+        }
+        
+        // Function to clear the cart
+        function clearCart() {
+            cartItems = [];
+            renderCartItems();
+            updateItemCount();
+            updateSummary();
+            saveCartToLocalStorage();
+            showToast('Cart cleared.');
+        }
+        
+        // Set up event listeners for quantity buttons
+        function setupQuantityButtons() {
+            document.querySelectorAll('.quantity-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const itemElement = btn.closest('.cart-item');
+                    const itemId = parseInt(itemElement.dataset.id);
+                    const quantityElement = itemElement.querySelector('.quantity');
+                    let quantity = parseInt(quantityElement.textContent);
+                    
+                    if (btn.classList.contains('increment')) {
+                        quantity++;
+                    } else if (btn.classList.contains('decrement')) {
+                        quantity--;
+                    }
+                    
+                    updateCartItemQuantity(itemId, quantity);
+                });
+            });
+        }
+        
+        // Set up event listeners for remove buttons
+        function setupRemoveButtons() {
+            document.querySelectorAll('.remove-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const itemElement = btn.closest('.cart-item');
+                    const itemId = parseInt(itemElement.dataset.id);
+                    removeFromCart(itemId);
+                });
+            });
+        }
+        
+        // Event Listeners
+        proceedBtn.addEventListener('click', () => {
+            if (currentStep === 1) {
+                // Validate cart before proceeding to details
+                if (validateCart()) {
+                    showSection(currentStep + 1);
+                }
+            } else if (currentStep === 2) {
+                // Validate details before proceeding to payment
+                if (validateDetails()) {
+                    showSection(currentStep + 1);
+                }
+            } else if (currentStep === 3) {
+                // Proceed to complete
+                showSection(currentStep + 1);
+            } else {
+                // Reset to shopping
+                showSection(1);
+            }
+        });
+        
+        continueShopping.addEventListener('click', () => {
+            // Reset to shopping
+            showSection(1);
+        });
+        
+        clearCartBtn.addEventListener('click', clearCart);
+        
+        deliveryOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                // Remove selected class from all options
+                deliveryOptions.forEach(opt => opt.classList.remove('selected'));
+                
+                // Add selected class to clicked option
+                option.classList.add('selected');
+                
+                // Update delivery fee
+                deliveryFee = parseFloat(option.dataset.price);
+                deliveryFeeEl.textContent = `₹${deliveryFee.toFixed(2)}`;
+                updateSummary();
+            });
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load cart from localStorage
+            loadCartFromLocalStorage();
+        });
+        
+        // Global function to add items to cart from other pages
+        window.addToCart = function(productName, productPrice, productImageUrl) {
+            // Create a cart item object
+            const newItem = {
+                id: Date.now(), // Use timestamp as unique ID
+                name: productName,
+                price: parseFloat(productPrice),
+                imageUrl: productImageUrl,
+                quantity: 1,
+                unit: '1 unit'
+            };
+            
+            // Add to cart
+            addToCart(newItem);
+        };
+    </script>
+</body>
+</html>
